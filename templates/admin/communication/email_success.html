@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Sent</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% include "admin/navbar.html" %}
+</head>
+<body>
+    <div class="container">
+        <h2>Email Sent Successfully</h2>
+       
+        <a href="{% url 'email_log_list' %}" class="btn btn-secondary">View Email Logs</a>
+    </div>
+</body>
+</html>

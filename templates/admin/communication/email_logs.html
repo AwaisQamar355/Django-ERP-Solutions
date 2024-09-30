@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Logs</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+{% include "admin/navbar.html" %}
+    <div class="container">
+        <h2>Email Logs</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>User Id</th>
+                    <th>Recipient</th>
+                    <th>Subject</th>
+                    <th>Send Time</th>
+                    <th>Priority Level</th>
+                    <th>CC</th>
+                    <th>BCC</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{% if log.user %}{{ log.user.user_id }}{% endif %}</td>
+                        <td>{{ log.recipient }}</td>
+                        <td>{{ log.subject }}</td>
+                        <td>{{ log.send_time }}</td>
+                        <td>{{ log.priority_level }}</td>
+                        <td>{{ log.cc }}</td>
+                        <td>{{ log.bcc }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

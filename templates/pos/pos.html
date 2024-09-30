@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>POS</title>
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    <div id="msg"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card mt-4 ">
+                    <div class="card-header text-center" style="background: #59bd8e;"><b>{{date}}</b></div>
+                    <div class="card-body" id="all_accounts">
+                        <form>
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td><label><b>Invoice no#</b></label></td>
+                                        <td><input autocomplete="off" type="text" list="bills" name="bill_id"
+                                                id="bill_id" placeholder="Invoice no#" class="" value="" readonly></td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <td><label style="margin-left: 0px;"><b>Selector Customer</b><span
+                                                    style="color:red; font-weight:bold">*</span></label></td>
+                                        <td><input list="vendor_list" autocomplete="off"  id="vendor_id"
+                                                style="width: 50px;">
+                                            <datalist id="vendor_list">
+                                                {% for i in customer_list %}
+                                                <option value="{{i.party_code}}">{{i.name}}</option>
+                                            
+                                                {% endfor %}
+                                            </datalist>
+                                            <input name="" id="customer_name" style="width: 165px;" placeholder="Customer Name" readonly>
+                                        </td>
+                                    </tr>
+                                    <tr hidden>
+                                        <td><label><b>Select Date</b></label></td>
+                                        <td><input type="date" name="Posted_date" id="Posted_date" value="{{date}}"
+                                                class=""></td>
+
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="">
+                                <input type="text" name="" id="row_counter" value="0" hidden>
+                                <table class="table table-sm" id="table_id">
+                                    <thead>
+                                        <tr>
+                                            {% comment %} <th>Item Code<span
+                                                    style="color:red; font-weight:bold">*</span></th> {% endcomment %}
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Qty<span style="color:red; font-weight:bold">*</span></th>
+                                            <th>Unit Price</th>
+                                            <th>Total Price</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table_body">
+                                        {% comment %} Table Body will append here {% endcomment %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <b>Grand Total</b>
+                            <input readonly="" style=" border-radius: 5px; height: 35px; width: 145px;" type="text"
+                                name="total" id="grand_total">
+                            <b>Discount</b>
+                            <input style=" border-radius: 5px; height: 35px; width: 100px;" type="number" value="0"
+                                name="discount" id="discount">
+                            <b>Net Amount</b>
+                            <input readonly style=" border-radius: 5px; height: 35px; width: 145px;" type="text"
+                                name="afterdiscount" id="afterdiscount">
+
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary save_payment" id="on_credit">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card mt-4">
+                    <div class="card-header text-center" style="background: #59bd8e;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <b>Search: </b>
+                                        <input list="product_name" id="stockProductName">
+                                        <datalist id="product_name">
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div>
+                                        <b>Type:</b>
+                                        <input list="types" id="stockTypeInput">
+                                        <datalist id="types">
+                                        </datalist>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="all_items">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- table start -->
+
+        <!-- table end  -->
+    </div>
+
+
+    <script type="text/javascript">
+        $(document).on("click", "#add_new_row", function () {
+            var id = $(this).attr("item");
+            var name = $(this).attr("itemname");
+            var price = $(this).attr("price");
+            var qty = $(this).attr("qty");
+            var last_counter = $("#row_counter").val();
+            var item_name_id = "'browser_" + last_counter + "'";
+            var price_attr = "'unit_price_" + last_counter + "'";
+            var quantity_id = "'item_quantity_" + last_counter + "'";
+            var item_name = "'item_name_" + last_counter + "'";
+            var total_price_id = "'total_price_" + last_counter + "'";
+
+            $("#table_id tbody").append('<tr><td><input list="item_list" autocomplete="off" name="item_code[]" onchange="get_price(' + price_attr + ', ' + item_name_id + ', ' + item_name + ')"  id="browser_' + last_counter + '" placeholder="Item Code" value="' + id + '" class="form-control item_code" hidden></td><td ><input  name="item_name[]" id="item_name_' + last_counter + '" placeholder="Item Name" class="form-control item_name" value="' + name + '"></td><td><input type="text" name="item_quantity[]" onkeyup="item_qty(' + quantity_id + ',' + price_attr + ',' + total_price_id + ')" id="item_quantity_' + last_counter + '" placeholder="Item Quantity" class="form-control item_quantity" value="1"></td><td><input type="text" name="unit_price[]" onkeyup="item_price(' + price_attr + ',' + quantity_id + ',' + total_price_id + ')" id="unit_price_' + last_counter + '" placeholder="Unit Price"  class="form-control unit_price" value="' + price + '"></td><td><input type="text" name="total_price[]" id="total_price_' + last_counter + '" onkeyup="grand_total(' + total_price_id + ')"  placeholder="Total Price "  class="form-control total_price" value="' + price + '"></td><td><a href="javascript:void(0)" class="remove_row"><strong> Delete </strong></a></td></tr>');
+            last_counter++;
+            $("#row_counter").val(last_counter);
+        });
+        $(document).on('click', '.remove_row', function () {
+            $(this).parents('tr').remove();
+        });
+        $(document).ready(function () {
+            $("#vendor_id").on("input", function () {
+                var inputValue = $(this).val();
+                var selectedName = "";
+
+                $("#vendor_list option").each(function() {
+                    if ($(this).val() === inputValue) {
+                        selectedName = $(this).text();
+                        return false; // Break out of the loop once a match is found
+                    }
+                });
+
+                if (selectedName) {
+                    $("#customer_name").val(selectedName);
+                } else {
+                    $("#customer_name").val("");
+                }
+            });
+
+            //-------------------------------
+            // reset insert form on close
+            $("#btn_close").on("click", function () {
+                $("#insert_vendor")[0].reset();
+            });
+            //----------------------------------
+            //additional discount for cash payment
+            $("#after_additional_discount").on("keyup", function () {
+                var cash_payment_amount = $("#after_additional_discount").val();
+                $("#cash_payment").val(cash_payment_amount);
+            });
+            //-------------------------------
+            // Calculate Discount percentage on percentage field
+            $("#discount").on("keyup", function () {
+                var discount = $("#discount").val();
+                var grand_total = $("#grand_total").val();
+                var after_discount = grand_total - discount;
+                $("#afterdiscount").val(after_discount.toFixed(2));
+            });
+            $(document).on("click", ".save_payment", function () {
+                let is_print = $(this).attr('id');
+                
+
+                let bill_id = $("#bill_id").val();
+                var vendor_id = $("#vendor_id").val();
+                var Posted_date = $("#Posted_date").val();
+                var discount = $("#discount").val();
+                var afterdiscount = $("#afterdiscount").val();
+
+
+                $("#vendor_id").css('border-color', '');
+                $("#bill_id").css('border-color', '');
+                if (vendor_id.trim() == '') {
+                    $("#vendor_id").css('border-color', 'red');
+                }
+
+                if (bill_id.trim() == "") {
+                    $("#bill_id").css('border-color', 'red');
+
+                }
+                // return;
+
+                var item_code = document.getElementsByClassName('item_code'),
+                    all_item_code = [].map.call(item_code, function (input) {
+                        return input.value;
+                    }).join(',');
+                // alert(all_item_code);
+                // return;
+                var item_name = document.getElementsByClassName('item_name'),
+                    all_item_name = [].map.call(item_name, function (input) {
+                        return input.value;
+                    }).join(',');
+                // alert(all_item_name);
+                var item_description = document.getElementsByClassName('item_description'),
+                    all_item_description = [].map.call(item_description, function (input) {
+                        return input.value;
+                    }).join(',');
+                // alert(all_item_description);
+                var item_quantity = document.getElementsByClassName('item_quantity'),
+                    all_item_quantity = [].map.call(item_quantity, function (input) {
+                        return input.value;
+                    }).join(',');
+                //return;
+                var unit_price = document.getElementsByClassName('unit_price'),
+                    all_unit_price = [].map.call(unit_price, function (input) {
+                        return input.value;
+                    }).join(',');
+                // return;
+                var total_price = document.getElementsByClassName('total_price'),
+                    all_total_price = [].map.call(total_price, function (input) {
+                        return input.value;
+                    }).join(',');
+                $.ajax({
+                    url: "/sale_invoice_insert",
+                    type: "POST",
+                    data: { all_item_quantity: all_item_quantity, all_unit_price: all_unit_price, bill_id: bill_id, all_item_code: all_item_code, vendor_id: vendor_id, Posted_date: Posted_date, afterdiscount: afterdiscount, discount: discount, is_print:is_print },
+
+                    success: function (data) {
+                        console.log(data.url)
+                        
+
+                        
+
+                        if (data == "Data Inserted") {
+                            $("#vendor_id").val("");
+                            $('#table_body').empty();
+                            $("#bill_id").val("");
+                            $("#grand_total").val("");
+                            $("#afterdiscount").val("");
+                            $("#discount").val(0);
+                            $("#customer_name").val("");
+
+                            $("#msg").empty()
+                            $("#msg").html('<div class="alert alert-success text-center" role="alert">Saved</div>');
+                            get_last_invoice();
+                            item_list();
+                        } 
+                        
+                        else{
+                            $("#msg").html('<div class="alert alert-danger text-center" role="alert">' + data + '</div>');
+
+                        }
+                    }
+                });
+            });
+            // item_names("browser_0");
+            category_list();
+            item_list();
+            get_last_invoice();
+
+            // ---------------------------------------------------------
+            // sum after deleting row
+            $(document).on('click', '.item_number', function () {
+                var sum = 0;
+                $('.total_price').each(function () {
+                    sum += Number($(this).val());
+                });
+                $('#grand_total').val(sum.toFixed(2));
+                $('#afterdiscount').val(sum.toFixed(2));
+                //$("#after_additional_discount").val(sum.toFixed(2));
+                //$("#cash_payment").val(sum.toFixed(2));
+            });
+
+            //------------------------------------------------------
+            // sum all price values
+            $('#table_id').on('keyup', function () {
+                var sum = 0;
+                $('.total_price').each(function () {
+                    sum += Number($(this).val());
+                });
+                $('#grand_total').val(sum.toFixed(2));
+                $('#afterdiscount').val(sum.toFixed(2));
+            });
+            //------------------------------------------------------
+            // sum after deleting row
+            $(document).on('click', '.remove_row', function () {
+                var sum = 0;
+                $('.total_price').each(function () {
+                    sum += Number($(this).val());
+                });
+                $('#grand_total').val(sum.toFixed(2));
+                $('#afterdiscount').val(sum.toFixed(2));
+            });
+
+        });
+        //----------------------------------------------
+        function get_price(price_field_id, item_name_id, item_name) {
+            var item_id = $('#' + item_name_id).val();
+
+            $.ajax({
+                url: "load_item_detail/" + item_id,
+                dataType: "JSON",
+                success: function (data) {
+                    console.log(data)
+                    $("#" + price_field_id).val(data.purchase_price);
+                    $('#' + item_name).val(data.name);
+                }
+            });
+        }
+        //---------------------------------------------
+
+        function party_name() {
+            $.ajax({
+                url: "party_profiles",
+                type: "POST",
+                success: function (load) {
+                    console.log(load)
+                    $("#vendor_id").html(load);
+                }
+            });
+        }
+        //-----------------------------------------------
+
+        //-----------------------------------
+        // geting item name and unit price on the base of item id
+        function item_qty(quantity_id, price_attr, total_price_id) {
+            var qty = $('#' + quantity_id).val();
+            var unit_price = $('#' + price_attr).val();
+            var mul = unit_price * qty;
+            $('#' + total_price_id).val(mul.toFixed(2));
+            var total = $('#' + total_price_id).val();
+            var grand_total = + total;
+            var a = ".00";
+        }
+        //-----------------------------------
+        // geting item unit price and quantity on the base of item id
+        function item_price(price_attr, quantity_id, total_price_id) {
+            var qty = $('#' + quantity_id).val();
+            var unit_price = $('#' + price_attr).val();
+            var mul = unit_price * qty;
+            $('#' + total_price_id).val(mul.toFixed(2));
+            var total = $('#' + total_price_id).val();
+            var grand_total = + total;
+        }
+
+        // All Categories
+        const category_list = () => {
+
+            $.ajax({
+                url: "/category",
+                type: "GET",
+                success: function (data) {
+                    // Assuming data is an array of objects with 'stock_type_code' and 'name' properties
+                    const dataList = $("#types");
+                    // Clear existing options
+                    dataList.empty();
+                    // Append options based on the data received
+                    data.forEach(function (item) {
+                        dataList.append(`<option value="${item.name}" data-stock-type-code="${item.stock_type_code}">`);
+                    });
+                }
+
+            })
+        }
+
+        // All Item list
+        const item_list = () => {
+            $.ajax({
+                url: 'stock-list/',
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    $('#all_items').empty();
+                    data.forEach(function (item) {
+                        const htmlContent = `
+                            <div class="col-md-3 " >
+                                <div class="card mt-1" id="all_items">
+                                    <div class="card-header text-center">
+                                        <p>${item.name}</p>
+                                        <p>Rs: ${item.sale_price}</p>
+                                        <p>Qty-${item.stock_in_hand}</p>
+                                        <button class="btn btn-primary add_row item_number" id="add_new_row" item="${item.stock_id}" itemname= "${item.name}" price="${item.sale_price}" qty="${item.stock_in_hand}" >Add</button>
+                                    </div>
+                                    {% comment %} <div class="card-body" id="all_items">
+                                        
+                                    </div> {% endcomment %}
+                                </div> 
+                            </div>
+                        `;
+
+                        // Append the HTML content to the element with id "item-container"
+                        $('#all_items').append(htmlContent);
+                    });
+
+                }
+            })
+        }
+        // ----------------------------------
+        // All Items
+        // ----------------------------------
+        $("#stockTypeInput").on("input", function () {
+
+            var selectedOption = $("#types option[value='" + $(this).val() + "']");
+            if (selectedOption.length > 0) {
+                var stockTypeCode = selectedOption.attr('data-stock-type-code');
+            }
+            $.ajax({
+                url: "stock-list/" + stockTypeCode,
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    $('#all_items').empty();
+                    data.forEach(function (item) {
+                        const htmlContent = `
+                    <div class="col-md-3 " >
+                        <div class="card mt-1" id="all_items">
+                            <div class="card-header text-center">
+                                <p>${item.name}</p>
+                                <p>Rs: ${item.sale_price}</p>
+                                <p>Qty-${item.stock_in_hand}</p>
+                                <button class="btn btn-primary add_row item_number" id="add_new_row" item="${item.stock_id}" itemname= "${item.name}" price="${item.sale_price}" qty="${item.stock_in_hand}" >Add</button>
+                            </div>
+                        </div> 
+                    </div>
+                `;
+
+                        // Append the HTML content to the element with id "item-container"
+                        $('#all_items').append(htmlContent);
+                    });
+
+                }
+            })
+        });
+
+        //-----------------------------------------
+        // item name contains
+        //-----------------------------------------
+        $("#stockProductName").on("keyup", function () {
+
+            var itemname = $(this).val();
+
+            $.ajax({
+                url: "stock-list/?search=" + itemname,
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    $('#all_items').empty();
+                    data.forEach(function (item) {
+                        const htmlContent = `
+                    <div class="col-md-3 " >
+                        <div class="card mt-1" id="all_items">
+                            <div class="card-header text-center">
+                                <p>${item.name}</p>
+                                <p>Rs: ${item.sale_price}</p>
+                                <p>Qty-${item.stock_in_hand}</p>
+                                <button class="btn btn-primary add_row item_number" id="add_new_row" item="${item.stock_id}" itemname= "${item.name}" price="${item.sale_price}" qty="${item.stock_in_hand}" >Add</button>
+                            </div>
+                            {% comment %} <div class="card-body" id="all_items">
+                                
+                            </div> {% endcomment %}
+                        </div> 
+                    </div>
+                `;
+
+                        // Append the HTML content to the element with id "item-container"
+                        $('#all_items').append(htmlContent);
+                    });
+
+                }
+            })
+        });
+
+        // ------------------------------------------------
+        // get last Invoice 
+        // ------------------------------------------------
+        const get_last_invoice = () => {
+            $.ajax({
+                url: "get_last_invoice_no",
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    $("#bill_id").val(data.last_invoice)
+                }
+            })
+        }
+        // -----------------------------------------
+        $.ajaxSetup({
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+    </script>
+
+</body>
+
+</html>

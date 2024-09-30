@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Report</title>
+    {% include  'admin/navbar.html' %}
+</head>
+<body> 
+    <div class="container">
+        <h2  class="text-center bg-info text-light py-3 mt-4">Financial Report</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Company Name</th>
+                    <th>Owner Name</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Payment Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.payment_id }}</td>
+                    <td>{{ payment.company.name }}</td>
+                    <td>{{ payment.owner_name }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.get_payment_method_display }}</td>
+                    <td>{{ payment.get_payment_status_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Total Amount: {{ total_amount }}</p>
+    </div>
+   
+</body>
+</html>

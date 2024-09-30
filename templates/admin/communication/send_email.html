@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'admin/navbar.html' %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">Send Email to {{ user.username }}</h2>
+        
+        <!-- Display messages -->
+        {% if messages %}
+        <div class="alert alert-dismissible">
+            {% for message in messages %}
+            <div class="alert 
+                {% if message.tags %}
+                alert-{{ message.tags }}
+                {% endif %}
+                " role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="recipient">Recipient Email Address:</label>
+                <input type="email" class="form-control" id="recipient" name="recipient"  required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="message_body">Message Body:</label>
+                <textarea class="form-control" id="message_body" name="message_body" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="attachments">Attachments:</label>
+                <input type="file" class="form-control-file" id="attachments" name="attachments">
+            </div>
+            <div class="form-group">
+                <label for="priority_level">Priority Level:</label>
+                <input type="text" class="form-control" id="priority_level" name="priority_level">
+            </div>
+            <div class="form-group">
+                <label for="cc">CC (Optional):</label>
+                <input type="email" class="form-control" id="cc" name="cc">
+            </div>
+            <div class="form-group">
+                <label for="bcc">BCC (Optional):</label>
+                <input type="email" class="form-control" id="bcc" name="bcc">
+            </div>
+            <div class="form-group">
+                <label for="personalization_tags">Personalization Tags (Optional):</label>
+                <textarea class="form-control" id="personalization_tags" name="personalization_tags" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Email</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+</body>
+</html>

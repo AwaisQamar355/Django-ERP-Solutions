@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+  <title>Dashboard</title>
+</head>
+
+<body>
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid">
+    <h1 class="text-center py-3">Wecome to {{user}}</h1>
+
+    <div class="row">
+      <!-- <div class="col-sm-3" >
+                <div class="card-body bg-success" style="margin:3%; border-radius: 10px; border: 2px solid #000;">
+                    <div class="font-weight-bold text-white" style="font-size: 28px;">3</div>
+                    <div class="font-weight-bold text-white">Parties</div>
+                    <div style="margin-top:1%;"><a href="/party_profile" class="text-center text-uppercase ">View</a></div>
+                </div>
+            </div> -->
+      <div class="col-sm-3">
+        <div class="card-body bg-primary" style="margin:3%; border-radius: 10px; border: 2px solid #000;">
+          <div class="font-weight-bold text-white" style="font-size: 28px;">{{today_sale}}</div>
+          <div class="font-weight-bold text-white">Today Sales</div>
+          <div style="margin-top:1%;"><a href="/invoice_details" class="text-center text-uppercase text-white">View</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card-body bg-danger" style="margin:3%; border-radius: 10px; border: 2px solid #000;">
+          <div class="font-weight-bold text-white" style="font-size: 28px;">{{today_purchase}}</div>
+          <div class="font-weight-bold text-white">Today Purchase</div>
+          <div style="margin-top:1%;"><a href="/bill_details" class="text-center text-uppercase ">View</a></div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-sm-6">
+          <div class="card-body" style="border-radius: 10px; border: 2px solid #000;">
+            <h4 class="text-center alert alert-info py-1">Stock Alert</h4>
+            <table class="table" id="stock_list">
+              <thead>
+                <tr style="background: #59bd8e;">
+                  <th>Sr.</th>
+                  <th>Name</th>
+                  <th>Current Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in low_stock %}
+                <tr>
+                  <td>1</td>
+
+                  <td>{{i.name}}</td>
+                  <td>{{i.stock_in_hand}}</td>
+
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card-body" style="border-radius: 10px; border: 2px solid #000;">
+
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    var xValues = ["01/06/2024",  "03/06/2024", "04/06/2024", "05/06/2024", "06/06/2024", "07/06/2024", "08/06/2024", "09/06/2024", "10/06/2024"];
+    var yValues = [2000, 3000, 8990, 900, 3400, 400,5000,4000,4000,1000];
+    var barColors = ["red", "green", "blue", "orange", "brown", 'Yellow','Olive','Silver','Pink', 'Purple'];
+
+    new Chart("myChart", {
+      type: "bar",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "Last 10 Days sales"
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <title>Update User Profile</title>
+  </head>
+<body>
+  
+
+  {% include 'navbar.html' %}
+
+{% block content %}
+
+
+  
+{% comment %} <div class="container my-3"> 
+  <div  style="margin-left:30%; margin-top:-42%; "><b></b></div> {% endcomment %}
+
+  <form action='/update_group/{{groups.id}}' method="POST" >
+    <div class="alert alert-dark mt-5 row " role="alert" style="margin-top:50%;"><b >Update Group Info</b></div>
+    {% if error2 %}
+    <div class="alert alert-danger " role="alert">
+      Please Enter First Name !!    
+    </div>
+    {% endif %}  
+    {% csrf_token %}
+    <div class="container-fluid" >
+    <div class="row">
+      <div class="col">
+        <input type="text" class="form-control" name="id" required maxlength="50" value="{{groups.id}}" readonly hidden/>
+    <div class="row">
+      <div class="col">
+        <label class=" control-label"> Name :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="text" class="form-control" id="name" name="name"  value="{{groups.name}}">
+    
+    </div>
+</div>
+      <button type="submit" class="btn btn-success my-3" >Submit</button>  
+    
+  </div>
+  </form>
+
+          
+
+{% endblock content %}
+</body>
+</html>

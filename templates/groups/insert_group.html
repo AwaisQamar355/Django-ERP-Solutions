@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <title>User Profile</title>
+  </head>
+<body>
+  
+
+  {% include 'navbar.html' %}
+
+{% block content %}
+
+
+  
+{% comment %} <div class="container my-3"> 
+  <div  style="margin-left:30%; margin-top:-42%; "><b></b></div> {% endcomment %}
+
+  <form action='/insert_group/' method="POST" >
+    <div class="alert alert-dark mt-5  " role="alert" style="margin-top:20%;"><b >Groups info</b></div>
+    {% if error2 %}
+    <div class="alert alert-danger " role="alert">
+      Please Enter Your Name !!    
+    </div>
+    {% endif %}  
+
+    {% csrf_token %}
+    <div class="container-fluid" >
+    <div class="row">
+      <div class="col">
+        <label class=" control-label">Name :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="text" class="form-control" id="name" name="name"  >
+      </div>
+     
+  
+    </div>
+      <button type="submit" class="btn btn-success my-3" >Submit</button>  
+    
+  </div>
+  </form>
+
+          
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    gender = $("#gender").val();
+    if(gender == 'male'){
+      $("#pregnant_val").val(0);
+      $("#hiddenFields1").hide();
+      $("#hiddenFields").hide();
+    }else{
+    if($('#is_pregnant').is(":checked")){
+      $("#pregnant_val").val(1);
+        $("#hiddenFields").show();
+      } else{
+      $("#pregnant_val").val(0);
+      $("#hiddenFields").hide();
+    }
+
+  }
+
+   
+ 
+    $("#status").on('click',function(){
+      var status = $("#status").val();
+      if ($("#status").is(':checked')) {
+        $("#status_val").val(1);
+      } else {
+        $("#status_val").val(0);
+      }
+    })
+
+
+
+    // 
+    $("#is_pregnant").on('click',function(){
+     
+      var is_pregnant = $("#is_pregnant").val();
+      if($('#is_pregnant').is(":checked")){
+        $("#pregnant_val").val(1);
+          $("#hiddenFields").show();
+        } else{
+        $("#pregnant_val").val(0);
+        $("#hiddenFields").hide();
+      }    
+    });
+
+    $("#gender").on('change',function(){
+      var gender = $("#gender").val();
+  
+      if(gender == "male"){
+       
+        $("#hiddenFields1").hide();
+        $("#hiddenFields").hide();
+        $("#pregnant_val").val(0);
+      }
+      else{
+        $("#hiddenFields1").show();
+       
+      }
+         
+    });
+  
+  
+});
+
+</script>  
+
+{% endblock content %}
+</body>
+</html>

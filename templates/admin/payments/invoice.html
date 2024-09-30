@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+   
+</head>
+<body>
+    <h2 class="text-center bg-info text-light py-3 mt-4">Invoice</h2>
+    <p>Payment ID: {{ payment.payment_id }}</p>
+    <p>Company Name: {{ payment.company.name }}</p>
+    <p>Owner Name: {{ payment.owner_name }}</p>
+    <p>Payment Date: {{ payment.payment_date }}</p>
+    <p>Amount: {{ payment.amount }}</p>
+    <p>Payment Method: {{ payment.get_payment_method_display }}</p>
+    <p>Transaction ID: {{ payment.transaction_id }}</p>
+    <p>Payment Status: {{ payment.get_payment_status_display }}</p>
+    <p>Notes: {{ payment.notes }}</p>
+</body>
+</html>

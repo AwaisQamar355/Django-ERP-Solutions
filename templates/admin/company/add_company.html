@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+ <style>
+        .flash-message {
+            animation: flash-message 10s;
+        }
+        @keyframes flash-message {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+    {% include 'admin/navbar.html' %}
+    <title>Add Company</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">Add Company</h2>
+       
+        {% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+                <div id="flash-message" class="alert alert-{{ message.tags }} flash-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="company_id" class="form-label">Company ID</label>
+                        <input type="text" class="form-control" id="company_id" name="company_id" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="contact_person_name" class="form-label">Contact Person Name</label>
+                        <input type="text" class="form-control" id="contact_person_name" name="contact_person_name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="contact_email" class="form-label">Contact Email</label>
+                        <input type="email" class="form-control" id="contact_email" name="contact_email" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <label for="contact_phone_number" class="form-label">Contact Phone Number</label>
+                        <input type="text" class="form-control" id="contact_phone_number" name="contact_phone_number" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="company_type" class="form-label">Company Type</label>
+                        <input type="text" class="form-control" id="company_type" name="company_type" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="registration_number" class="form-label">Registration Number</label>
+                        <input type="text" class="form-control" id="registration_number" name="registration_number" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="industry_type" class="form-label">Industry Type</label>
+                        <input type="text" class="form-control" id="industry_type" name="industry_type" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <label for="date_of_establishment" class="form-label">Date of Establishment</label>
+                        <input type="date" class="form-control" id="date_of_establishment" name="date_of_establishment" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="number_of_employees" class="form-label">Number of Employees</label>
+                        <input type="number" class="form-control" id="number_of_employees" name="number_of_employees" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="business_hours" class="form-label">Business Hours</label>
+                        <input type="text" class="form-control" id="business_hours" name="business_hours" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="website_url" class="form-label">Website URL</label>
+                        <input type="url" class="form-control" id="website_url" name="website_url" required>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <label for="logo" class="form-label">Logo</label>
+                        <input type="file" class="form-control" id="logo" name="logo">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="tax_identification_number" class="form-label">Tax Identification Number</label>
+                        <input type="text" class="form-control" id="tax_identification_number" name="tax_identification_number" required>
+                    </div>
+                  
+                   
+                     <div class="col-md-3 form-check">
+                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active">
+                        <label class="form-check-label" for="is_active">Active</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                 <div class="col-md-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+                     <div class="col-md-3">
+                        <label for="social_media_links" class="form-label">Social Media Links</label>
+                        <textarea class="form-control" id="social_media_links" name="social_media_links" rows="3" required></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="additional_notes" class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="additional_notes" name="additional_notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 ">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+     <script>
+        // Flash message handling
+        document.addEventListener('DOMContentLoaded', function() {
+            var flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(function() {
+                    flashMessage.style.display = 'none';
+                }, 3000);  // Adjust the time in milliseconds (3 seconds here)
+            }
+        });
+    </script>
+</body>
+</html>

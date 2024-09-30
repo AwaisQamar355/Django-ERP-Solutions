@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+     {% include  'admin/navbar.html' %}
+    <title>Confirm Delete</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Confirm Delete</h1>
+        <p>Are you sure you want to delete the company <strong>{{ company.name }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a class="btn btn-secondary" href="{% url 'company_list' %}">Cancel</a>
+        </form>
+    </div>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

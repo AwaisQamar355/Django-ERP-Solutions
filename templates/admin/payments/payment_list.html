@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment List</title>
+    {% include 'admin/navbar.html' %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">Payment List</h2>
+         <div class="text-right mb-3">
+            <a class="btn btn-primary" href="{% url 'add_payment' %}">Add Payment</a>
+        </div>
+        <table class="table table-striped" id="paymentList">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Company ID</th>
+                    <th>Owner Name</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Transaction ID</th>
+                    <th>Payment Status</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.payment_id }}</td>
+                    <td>{{ payment.company.name }}</td>
+                    <td>{{ payment.owner_name }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.get_payment_method_display }}</td>
+                    <td>{{ payment.transaction_id }}</td>
+                    <td>{{ payment.get_payment_status_display }}</td>
+                    <td>{{ payment.notes }}</td>
+                    <td>
+                        <a href="{% url 'update_payment' payment.payment_id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'generate_invoice' payment.payment_id %}" class="btn btn-sm btn-secondary">Invoice</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#paymentList').DataTable({
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+                "info": true,
+                "responsive": true
+            });
+        });
+    </script>
+</body>
+</html>

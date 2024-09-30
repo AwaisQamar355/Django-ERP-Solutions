@@ -1,0 +1,92 @@
+
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">Home <span class="sr-only">(current)</span></a>
+      </li>
+    
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Animal
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href='/list_animal_profile'>Animal List</a>
+          <a class="dropdown-item" href="/show">Category List</a>
+          <a class="dropdown-item" href='/insert_pregnancy_detail'>Add Pregnancy_Detail</a>
+          <a class="dropdown-item" href='/list_of_animals'>Pregnant Animal List </a>
+          <a class="dropdown-item" href='/shared_animal_person_list'>Shared Animal List</a>
+        </div>
+        
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          User
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href='/list_user_profile'>User List</a>
+          
+          <a class="dropdown-item" href='/list_group'>Group List</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Accounts</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'main_head' %}">Main Heads</a>
+          <a class="dropdown-item" href="{% url 'sub_head' %}">Sub Heads</a>
+          <a class="dropdown-item" href="{% url 'dept_head' %}">Dept Heads</a>
+          <a class="dropdown-item" href="{% url 'chart_of_accounts' %}">Chart of Accounts</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Purchase</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'purchase_bill' %}">Purchase Bills</a>
+          <a class="dropdown-item" href="{% url 'bill_details' %}">Bill Details</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Sales</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'sale_invoice' %}">Sale Invoices</a>
+          <a class="dropdown-item" href="{% url 'invoice_details' %}">Invoice Details</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Party</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'party_type' %}">Party Type</a>
+          <a class="dropdown-item" href="{% url 'party_profile' %}">Party Profile</a>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Vourchers</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'voucher_types' %}">Voucher Type</a>
+          <a class="dropdown-item" href="{% url 'all_journal_vouchers' %}">Vouchers</a>
+        </div>
+      </li>
+      
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Stock</a>
+        <div class="dropdown-menu">
+          <!-- <a class="dropdown-item" href="{% url 'all_journal_vouchers' %}">Voucher</a> -->
+          <a class="dropdown-item" href="{% url 'stock_type' %}">Stock Type</a>
+          <a class="dropdown-item" href="{% url 'finish_goods' %}">Finish Goods</a>
+          {% comment %} <a class="dropdown-item" href="{% url 'raw_goods' %}">Raw Goods</a> {% endcomment %}
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Reports</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'ledger' %}">Ledger</a>
+          <a class="dropdown-item" href="{% url 'all_journal_vouchers' %}">Voucher Details</a>
+        </div>
+      </li>
+     
+    </ul>

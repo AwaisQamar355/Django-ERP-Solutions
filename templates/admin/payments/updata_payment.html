@@ -1,0 +1,76 @@
+{% load static %}
+{% include 'admin/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Payment</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="text-center bg-info text-light py-3 mt-4">Edit Payment</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_id" value="{{ payment.id }}">
+                    
+                    <div class="form-group">
+                        <label for="company_id">Company ID:<span style="color:red; font-weight:bold;">*</span></label>
+                        <select id="company_id" name="company_id" class="form-control" required>
+                            <option value="">Select Company ID</option>
+                            {% for company in companies %}
+                            <option value="{{ company.id }}" {% if payment.company.id == company.id %}selected{% endif %}>{{ company.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="owner_name">Owner Name</label>
+                        <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ payment.owner_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_date">Payment Date</label>
+                        <input type="date" class="form-control" id="payment_date" name="payment_date" value="{{ payment.payment_date|date:'Y-m-d'  }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" value="{{ payment.amount }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select class="form-control" id="payment_method" name="payment_method" required>
+                            <option value="" disabled>Select a method</option>
+                            <option value="credit_card" {% if payment.payment_method == "credit_card" %}selected{% endif %}>Credit Card</option>
+                            <option value="bank_transfer" {% if payment.payment_method == "bank_transfer" %}selected{% endif %}>Bank Transfer</option>
+                            <!-- Add other options as needed -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transaction_id">Transaction ID</label>
+                        <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ payment.transaction_id }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_status">Payment Status</label>
+                        <select class="form-control" id="payment_status" name="payment_status" required>
+                            <option value="" disabled>Select a status</option>
+                            <option value="paid" {% if payment.payment_status == "paid" %}selected{% endif %}>Paid</option>
+                            <option value="pending" {% if payment.payment_status == "pending" %}selected{% endif %}>Pending</option>
+                            <option value="failed" {% if payment.payment_status == "failed" %}selected{% endif %}>Failed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notes/Comment</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3">{{ payment.notes }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% include 'admin/navbar.html' %}
+    <title>Company List</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'toastr/toastr.min.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">Company List</h2>
+
+        <div class="text-right mb-3">
+            <a class="btn btn-primary" href="{% url 'add_company' %}">Add Company</a>
+        </div>
+
+
+        <table class="table table-bordered" id="companyList">
+            <thead>
+                <tr>
+                    <th>Company ID</th>
+                    <th>Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in companies %}
+                <tr>
+                    <td>{{ company.company_id }}</td>
+                    <!-- Correct field for primary key -->
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.contact_person_name }}</td>
+                    <td>{{ company.contact_email }}</td>
+                    <td>{{ company.contact_phone_number }}</td>
+                    <td>{{ company.is_active|yesno:"Active,Inactive" }}</td>
+                    <td class="action-buttons">
+                        <a class="btn btn-info btn-sm" href="{% url 'company_detail' company.pk %}">View</a>
+                        <a class="btn btn-warning btn-sm" href="{% url 'update_company' company.company_id %}">Edit</a> {% if company.is_active %}
+                        <button class="btn btn-danger btn-sm deactivate-company" data-companyid="{{ company.pk }}" data-toggle="modal" data-target="#confirmDeactivateModal">Deactivate</button> {% else %}
+                        <button class="btn btn-success btn-sm activate-company" data-companyid="{{ company.pk }}" data-toggle="modal" data-target="#confirmActivateModal">Activate</button> {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Confirm Deactivate Modal -->
+    <div class="modal fade" id="confirmDeactivateModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeactivateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeactivateModalLabel">Confirm Deactivation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to deactivate this company?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger confirm-deactivate">Deactivate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Activate Modal -->
+    <div class="modal fade" id="confirmActivateModal" tabindex="-1" role="dialog" aria-labelledby="confirmActivateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmActivateModalLabel">Confirm Activation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to activate this company?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success confirm-activate">Activate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'datatables/datatables.min.js' %}"></script>
+    <script src="{% static 'toastr/toastr.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#companyList').DataTable({
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+                "info": true,
+                "responsive": true
+            });
+
+            // Confirm Deactivate Modal
+            $('#confirmDeactivateModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var companyId = button.data('companyid');
+                var modal = $(this);
+                modal.find('.confirm-deactivate').data('companyid', companyId);
+            });
+
+            $('.confirm-deactivate').click(function() {
+                var companyId = $(this).data('companyid');
+                var csrftoken = '{{ csrf_token }}';
+                // AJAX POST request to deactivate company
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "deactivate_company" %}',
+                    data: {
+                        'company_id': companyId,
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                        console.log('Company deactivated successfully');
+                        toastr.success('Company deactivated successfully');
+                        location.reload(); // Reload page after deactivation
+                    },
+                    error: function(error) {
+                        console.error('Error deactivating company:', error);
+                        toastr.error('Error deactivating company');
+                    }
+                });
+                $('#confirmDeactivateModal').modal('hide');
+            });
+
+            // Confirm Activate Modal
+            $('#confirmActivateModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var companyId = button.data('companyid');
+                var modal = $(this);
+                modal.find('.confirm-activate').data('companyid', companyId);
+            });
+
+            $('.confirm-activate').click(function() {
+                var companyId = $(this).data('companyid');
+                var csrftoken = '{{ csrf_token }}';
+                // AJAX POST request to activate company
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "activate_company" %}',
+                    data: {
+                        'company_id': companyId,
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                        console.log('Company activated successfully');
+                        toastr.success('Company activated successfully');
+                        location.reload(); // Reload page after activation
+                    },
+                    error: function(error) {
+                        console.error('Error activating company:', error);
+                        toastr.error('Error activating company');
+                    }
+                });
+                $('#confirmActivateModal').modal('hide');
+            });
+        });
+
+        $.ajaxSetup({
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+        });
+    </script>
+</body>
+
+</html>

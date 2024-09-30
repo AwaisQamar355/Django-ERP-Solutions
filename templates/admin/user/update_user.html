@@ -1,0 +1,80 @@
+<!-- templates/accounts/edit_user.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   {% include  'admin/navbar.html' %}
+    <style>
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-buttons a {
+            margin-right: 5px; /* Adjust spacing between buttons */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2  class="text-center bg-info text-light py-3 mt-4">Edit User</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+            </div>
+                <div class="form-group">
+                <label for="password">Password (leave blank to keep current):</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" value="{{ user.password }}"  name="password">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye" id="togglePassword"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="full_name">Full Name:</label>
+                <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.first_name }} {{ user.last_name }}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}">
+            </div>
+           <!-- <div class="form-group">
+                <label for="role">Role:</label>
+                <select class="form-control" id="role" name="role" value="{{ user.role }}">
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                    <option value="client" {% if user.role == 'client' %}selected{% endif %}>Client</option>
+                </select>
+            </div>-->
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select class="form-control" id="status" name="status" value="{{ user.status }}">
+                    <option value="True" {% if user.status %}selected{% endif %}>Active</option>
+                    <option value="False" {% if not user.status %}selected{% endif %}>Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+   <script>
+    $('#togglePassword').click(function(){
+                $(this).toggleClass('fa-eye fa-eye-slash');
+                var input = $('#password');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+            });
+
+   </script>
+</body>
+</html>

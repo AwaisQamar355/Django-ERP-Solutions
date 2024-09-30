@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'admin/navbar.html' %}
+    <style>
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-buttons a {
+            margin-right: 5px; /* Adjust spacing between buttons */
+        }
+    </style>
+    <!-- Include Bootstrap CSS and other libraries as needed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"> <!-- Toastr CSS -->
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">List of Users</h2>
+        <div class="text-right mb-3">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">Add User</button>
+        </div>
+        <table class="table table-bordered" id="user">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Date of Creation</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.user_id }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone_number }}</td>
+                        <td>{{ user.status|yesno:"Active,Inactive" }}</td>
+                        <td>{{ user.date_of_creation }}</td>
+                       <td class="action-buttons">
+                            <a href="{% url 'user_update' user.id %}" class="btn btn-warning btn-sm">Edit</a>
+                            {% if user.status %}
+                                <button class="btn btn-danger btn-sm deactivate-user" data-userid="{{ user.id }}" data-toggle="modal" data-target="#confirmDeactivateModal">Deactivate</button>
+                            {% else %}
+                                <button class="btn btn-success btn-sm activate-user" data-userid="{{ user.id }}" data-toggle="modal" data-target="#confirmActivateModal">Activate</button>
+                            {% endif %}
+                            <a class="btn btn-info" href="{% url 'user_detail' user.pk %}">View</a>
+                            <a href="{% url 'send_email' user.id %}" class="btn btn-primary btn-sm">Send Email</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'add_user' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="user_id">User ID:</label>
+                            <input type="text" class="form-control" id="user_id" name="user_id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye" id="togglePassword"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="full_name">Full Name:</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number:</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Is Active:</label>
+                            <input type="checkbox" id="status" name="status">
+                            <input type="hidden" id="status_val" name="status_val" value="False">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Deactivate Modal -->
+    <div class="modal fade" id="confirmDeactivateModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeactivateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeactivateModalLabel">Confirm Deactivation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to deactivate this user?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger confirm-deactivate">Deactivate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Activate Modal -->
+    <div class="modal fade" id="confirmActivateModal" tabindex="-1" role="dialog" aria-labelledby="confirmActivateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmActivateModalLabel">Confirm Activation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to activate this user?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success confirm-activate">Activate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script> <!-- Toastr JS -->
+
+    <script>
+        $(document).ready(function() {
+            $('#user').DataTable({
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+                "info": true,
+                "responsive": true,
+            });
+
+            // Toggle password visibility
+            $('#togglePassword').click(function(){
+                $(this).toggleClass('fa-eye fa-eye-slash');
+                var input = $('#password');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                } else {
+                    input.attr('type', 'password');
+                }
+            });
+
+            // Update hidden input field based on checkbox status
+            $('#status').change(function() {
+                $('#status_val').val(this.checked ? 'True' : 'False');
+            });
+
+            // Set initial status value
+            $('#status_val').val($('#status').is(':checked') ? 'True' : 'False');
+
+            // Confirm Deactivate Modal
+            $('#confirmDeactivateModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var userId = button.data('userid');
+                var modal = $(this);
+                modal.find('.confirm-deactivate').data('userid', userId);
+            });
+
+            $('.confirm-deactivate').click(function() {
+                var userId = $(this).data('userid');
+                var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+                // AJAX POST request to deactivate user
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "deactivate_user" %}',
+                    data: {
+                        'user_id': userId,
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                        console.log('User deactivated successfully');
+                        toastr.success('User deactivated successfully');
+                        location.reload(); // Reload page after deactivation
+                    },
+                    error: function(error) {
+                        console.error('Error deactivating user:', error);
+                        toastr.error('Error deactivating user');
+                    }
+                });
+                $('#confirmDeactivateModal').modal('hide');
+            });
+
+            // Confirm Activate Modal
+            $('#confirmActivateModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var userId = button.data('userid');
+                var modal = $(this);
+                modal.find('.confirm-activate').data('userid', userId);
+            });
+
+            $('.confirm-activate').click(function() {
+                var userId = $(this).data('userid');
+                var csrftoken = $('input[name=csrfmiddlewaretoken]').val();
+                // AJAX POST request to activate user
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "activate_user" %}',
+                    data: {
+                        'user_id': userId,
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function(response) {
+                        console.log('User activated successfully');
+                        toastr.success('User activated successfully');
+                        location.reload(); // Reload page after activation
+                    },
+                    error: function(error) {
+                        console.error('Error activating user:', error);
+                        toastr.error('Error activating user');
+                    }
+                });
+                $('#confirmActivateModal').modal('hide');
+            });
+        });
+    </script>
+
+</body>
+</html>

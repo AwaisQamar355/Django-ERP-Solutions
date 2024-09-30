@@ -1,0 +1,96 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+
+</head>
+
+<body>
+
+
+  <nav class="navbar navbar-expand-lg navbar-light "  style="background: #59bd8e;">
+    <a class="navbar-brand" href="/dashboard">Dashboard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/pos">POS <span class="sr-only">(current)</span></a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Purchase</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'purchase_bill' %}">Purchase Bills</a>
+            <a class="dropdown-item" href="{% url 'bill_details' %}">Bill Details</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Sales</a>
+          <div class="dropdown-menu">
+            <!-- <a class="dropdown-item" href="{% url 'sale_invoice' %}">Sale Invoices</a> -->
+            <a class="dropdown-item" href="{% url 'invoice_details' %}">Invoice Details</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Party</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'party_type' %}">Party Type</a>
+            <a class="dropdown-item" href="{% url 'party_profile' %}">Party Profile</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Stock</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'list_units' %}">Units</a>
+            <a class="dropdown-item" href="{% url 'stock_type' %}">Stock Type</a>
+            <a class="dropdown-item" href="{% url 'finish_goods' %}">Available Stock</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Reports</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'sales_report' %}">Sales Report</a>
+            <a class="dropdown-item" href="{% url 'purchase_report' %}">Purchase Report</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ul class="navbar-nav mr-auto">
+      {% if user.username is not None %}
+      <li class="nav-item dropdown custom-dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">{{user.username|capfirst}}</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'user_logout' %}">Log Out</a>
+        </div>
+      </li>
+      {% endif %}
+    </ul>
+    </div>
+    </div>
+  </nav>
+
+
+
+
+
+</body>
+
+</html>

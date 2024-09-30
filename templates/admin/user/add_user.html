@@ -1,0 +1,60 @@
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" action="{% url 'add_user' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="user_id">User ID:</label>
+                        <input type="text" class="form-control" id="user_id" name="user_id" value="{{ user_id }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ username }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fa fa-eye" id="togglePassword"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="full_name">Full Name:</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ full_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ phone_number }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Is Active:</label>
+                        <input type="checkbox" id="status" name="status" {% if status == 'True' %}checked{% endif %}>
+                        <input type="hidden" id="status_val" name="status_val" value="{{ status }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>List User Groups</title>
+  </head>
+<body>
+{% include 'navbar.html' %}
+
+   
+<div class="container my-3">
+  <a class="btn btn-primary" href='/insert_group' style="margin-left: 90%">Add Groups</a>
+  <h4 class="text-center alert alert-info py-3">List of Groups</h4>
+
+  <table class="table table-bordered"  id="animalTable">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+
+      </tr>
+    </thead>
+    <tbody>
+     {% for group in group_list %}
+     <tr>
+       <th scope="row">{{forloop.counter}}</th>
+       <td>{{group.name}}</td>   
+       <td><a href="/edit_group/{{group.id}}" class="btn btn-sm btn-warning"/>Edit</td>
+       <td><a href="/delete_group/{{group.id}}" class="btn btn-sm btn-danger"/>Delete</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>    
+
+
+<script>
+  $(document).ready(function() {
+    // Initialize DataTable
+    $('#animalTable').DataTable({
+      "paging": true,      // Enable pagination
+      "ordering": true,    // Enable sorting
+      "searching": true,   // Enable search
+      "info": true,        // Show info about entries and pagination
+      "responsive": true,  // Enable responsive behavior
+      "columnDefs": [
+        // Specify column-specific options if needed
+        // Example: {"targets": [0], "searchable": false, "orderable": false}
+      ]
+    });
+  });  
+</script>
+

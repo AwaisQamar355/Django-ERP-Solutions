@@ -1,0 +1,212 @@
+<html>
+  <head>
+    <title>User Profile</title>
+  </head>
+<body>
+  
+  {% include  'navbar.html' %}
+
+{% block content %}
+
+
+  
+{% comment %} <div class="container my-3"> 
+  <div  style="margin-left:30%; margin-top:-42%; "><b></b></div> {% endcomment %}
+
+  <form action='/register_user_profile/' method="POST" >
+    <div class="alert alert-dark mt-5 row " role="alert" style="margin-top:50%;"><b >User Info</b></div>
+    {% if error2 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter First Name !!    
+    </div>
+    {% endif %}  
+    {% if error3 %}
+    <div class="alert alert-danger"  role="alert">
+      Please Enter Last Name !!    
+    </div>
+    {% endif %} 
+    {% if error4 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter username !!    
+    </div>
+    {% endif %} 
+    {% if error5 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter Email !!    
+    </div>
+    {% endif %} 
+    {% if error6 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter User Role !!    
+    </div>
+    {% endif %} 
+
+    {% if error8 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter Gender !!    
+    </div>
+    {% endif %} 
+    {% if error9 %}
+    <div class="alert alert-danger" role="alert">
+      Please Enter is_Active Field !!    
+    </div>
+    {% endif %} 
+
+
+    {% csrf_token %}
+    <div class="container-fluid" >
+    <div class="row">
+      <div class="col">
+        <input type="text" class="form-control" name="id" required maxlength="50" value="{{user_profile.id}}" readonly hidden/>
+    <div class="row">
+      <div class="col">
+        <label class=" control-label">First Name :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="text" class="form-control" id="first_name" name="first_name" >
+      </div>
+      <div class="col">
+          <label class=" control-label">Last Name :<span style="color:red; font-weight:bold;">*</span></label>
+          <input type="text" class="form-control" id="last_name" name="last_name"  >
+      </div>
+      <div class="col">
+        <label class=" control-label">username :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="text" class="form-control" id="username" name="username" >
+      </div>
+      <div class="col">
+        <label class=" control-label">Email :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="text" class="form-control" id="email" name="email" >
+      </div>
+      <div class="col">
+        <label class=" control-label">Phone Number :</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" >
+      </div>
+    </div>
+    
+    <div class="row" style="margin-top:10px;">
+      <div class="col" >
+        <label class="from-group" >User Role :<span style="color:red; font-weight:bold;">*</span></label>
+        <select id="user_group" name="user_group"  class="form-control">
+          <option value="">Select Group</option>
+          {% for group in user_group_list%}
+          <option value="{{group.id}}">{{group.name}}</option>
+          {% endfor %}
+          
+        </select>
+      </div>
+      <div class="col" >
+        <label for="purchase_price ">City :</label>
+        <input type="text" class="form-control" id="city" name="city" >
+      </div>
+      <div class="col" >
+        <label for="purchased_date">Country :</label>
+        <input type="text" class="form-control" id="country" name="country">
+      </div>
+    
+      <div class="col" >
+        <label class=" control-label">Date of Birth :</label>
+        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" >
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      
+      <div class="col" >
+        <label class=" control-label">Gender : <span style="color:red; font-weight:bold;">*</span></label>
+        <select onchange="changeDropdown(this.value);" name="gender" class="form-control" required="required" id="gender" class="gender">
+          <option value="">Select Gender</option>
+          <option value="male" >Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="col" >
+        <label for="status" >is Active :<span style="color:red; font-weight:bold;">*</span></label>
+        <input type="checkbox"  id="status" name="status">
+        <input type="hidden"  id="status_val" name="is_active"  value="0" >
+      </div>    
+      <div class="col" >
+      </div>
+      <div class="col" >
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px;">
+      <div class="col">
+        <label for="description" >Description :</label>
+        <textarea id="description" class="form-control" name="description" rows="3" cols="50" ></textarea>
+      </div>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-success my-3" >Submit</button>  
+    </div>
+  </div>
+  </form>
+
+          
+
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    gender = $("#gender").val();
+    if(gender == 'male'){
+      $("#pregnant_val").val(0);
+      $("#hiddenFields1").hide();
+      $("#hiddenFields").hide();
+    }else{
+    if($('#is_pregnant').is(":checked")){
+      $("#pregnant_val").val(1);
+        $("#hiddenFields").show();
+      } else{
+      $("#pregnant_val").val(0);
+      $("#hiddenFields").hide();
+    }
+
+  }
+
+   
+ 
+    $("#status").on('click',function(){
+      var status = $("#status").val();
+      if ($("#status").is(':checked')) {
+        $("#status_val").val(1);
+      } else {
+        $("#status_val").val(0);
+      }
+    })
+
+
+
+    // 
+    $("#is_pregnant").on('click',function(){
+     
+      var is_pregnant = $("#is_pregnant").val();
+      if($('#is_pregnant').is(":checked")){
+        $("#pregnant_val").val(1);
+          $("#hiddenFields").show();
+        } else{
+        $("#pregnant_val").val(0);
+        $("#hiddenFields").hide();
+      }    
+    });
+
+    $("#gender").on('change',function(){
+      var gender = $("#gender").val();
+  
+      if(gender == "male"){
+       
+        $("#hiddenFields1").hide();
+        $("#hiddenFields").hide();
+        $("#pregnant_val").val(0);
+      }
+      else{
+        $("#hiddenFields1").show();
+       
+      }
+         
+    });
+  
+  
+});
+
+</script>  
+
+{% endblock content %}
+</body>
+</html>

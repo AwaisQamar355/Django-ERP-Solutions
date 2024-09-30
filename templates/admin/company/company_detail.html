@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Details</title>
+    {% include 'admin/navbar.html' %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center bg-info text-light py-3 mt-4">Detail of {{ company.name }} company</h2>
+        <p><strong>Company ID:</strong> {{ company.company_id }}</p>
+        <p><strong>Contact Person:</strong> {{ company.contact_person_name }}</p>
+        <p><strong>Contact Email:</strong> {{ company.contact_email }}</p>
+        <p><strong>Contact Phone:</strong> {{ company.contact_phone_number }}</p>
+        <p><strong>Address:</strong> {{ company.address }}</p>
+        <p><strong>Company Type:</strong> {{ company.company_type }}</p>
+        <p><strong>Registration Number:</strong> {{ company.registration_number }}</p>
+        <p><strong>Tax Identification Number:</strong> {{ company.tax_identification_number }}</p>
+        <p><strong>Industry Type:</strong> {{ company.industry_type }}</p>
+        <p><strong>Date of Establishment:</strong> {{ company.date_of_establishment }}</p>
+        <p><strong>Number of Employees:</strong> {{ company.number_of_employees }}</p>
+        <p><strong>Business Hours:</strong> {{ company.business_hours }}</p>
+        <p><strong>Website URL:</strong> <a href="{{ company.website_url }}" target="_blank">{{ company.website_url }}</a></p>
+        <p><strong>Social Media Links:</strong> {{ company.social_media_links }}</p>
+        <p><strong>Additional Notes:</strong> {{ company.additional_notes }}</p>
+        <p><strong>Status:</strong> {{ company.is_active|yesno:"Active,Inactive" }}</p>
+        {% if company.logo %}
+    <p><strong>Logo:</strong></p>
+    <img src="{{ company.logo.url }}" alt="{{ company.name }}" class="img-fluid">
+{% endif %} 
+        <a href="{% url 'update_company' company.company_id %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'company_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+
+    <div class="container mt-5">
+        <h2>Payment Details</h2>
+        <table class="table table-striped" id="paymentList">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Owner Name</th>
+                    <th>Payment Date</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Transaction ID</th>
+                    <th>Payment Status</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in company.payment_set.all %}
+                <tr>
+                    <td>{{ payment.payment_id }}</td>
+                    <td>{{ payment.owner_name }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.get_payment_method_display }}</td>
+                    <td>{{ payment.transaction_id }}</td>
+                    <td>{{ payment.get_payment_status_display }}</td>
+                    <td>{{ payment.notes }}</td>
+                    <td>
+                        <a href="{% url 'update_payment' payment.payment_id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'generate_invoice' payment.payment_id %}" class="btn btn-sm btn-secondary">Invoice</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#paymentList').DataTable({
+                "paging": true,
+                "ordering": true,
+                "searching": true,
+                "info": true,
+                "responsive": true
+            });
+        });
+    </script>
+</body>
+</html>
